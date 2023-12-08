@@ -1,0 +1,54 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: aks-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    kubernentes.io/ingress.class: "nginx"
+spec:
+  tls:
+  - hosts:
+      - princenarula.online
+      - sample-1.princenarula.online
+      - sample-2.princenarula.online
+    secretName: tls-secret 
+  ingressClassName: nginx
+  rules:
+  - host: princenarula.online
+    http:
+      paths:
+      - path: /photo
+        pathType: Prefix
+        backend:
+          service:
+            name: samplewebapp3
+            port:
+              number: 80
+      - path: /image
+        pathType: Prefix
+        backend:
+          service:
+            name: samplewebapp2
+            port:
+              number: 80
+  - host: sample-1.princenarula.online
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: samplewebapp1
+            port:
+              number: 80
+  - host: sample-2.princenarula.online
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: samplewebapp
+            port:
+              number: 3000
